@@ -1,11 +1,4 @@
-2 2
-AT
-*O
-6 7
-AIM*DEN
-*ME*ONE
-UPON*TO
-SO*ERIN
-*SA*OR*
-IES*DEA
-0
+sequence subsequence
+person compression
+VERDI vivaVittorioEmanueleReDiItalia
+caseDoesMatter CaseDoesMatter
