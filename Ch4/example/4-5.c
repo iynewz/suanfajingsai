@@ -9,6 +9,6 @@ void swap(int a, int b) {
 int main() {
     int a = 3, b = 4; 
     swap(3, 4);
-    printf("%d %d\n", a, b);
+    printf("%d %d\n", a, b);x
     return 0;
 }
