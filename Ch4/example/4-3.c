@@ -1,60 +1,84 @@
+// 4-3 The Dole Queue, UVa 133
 #include<stdio.h>
+#include<string.h>
 
-#define MAX_LEN 21
-int queue[MAX_LEN];
-int n;
+int code[8][255];
 
-int out(int position, int step, int direction) { //0, 4, 1
-    int p = position; //9
-    if (direction) {
-        while (step) { // 4,3,2,1
-            p = (p + 1) % n; //0,1,2,3
-            while (queue[p] == 0) {
-                p = (p + 1) % n;
-            }
-            step--;
-        }
-    } else { //顺时针
-        while (step) { //4,3
-            p = (p - 1 + n) % n;//9
-            while (queue[p] == 0) {
-                p = (p - 1 + n) % n;
-            }
-            step--;
+// char readchar() {
+//     while (1) {
+//         char ch = getchar();
+//         if (ch == '\n') {
+//             break;
+//         }
+//         return ch;
+//     }
+// }
+char readchar() {
+    for (; ;) {
+        char ch = getchar();
+        if (ch != '\n' && ch != '\r') {
+            return ch;
         }
     }
-    return p ;
+}
 
+int readint(int c) { //读取 c 位二进制并转换成十进制
+    int v = 0;
+    while(c--) {
+        v = v * 2 + readchar() - '0';
+    }
+    return v;
+}
+
+int readcodes() {
+    memset(code, 0, sizeof(code));
+    code[1][0] = readchar();
+    for (int i = 2; i <= 7; i++) {
+        for(int j = 0; j < (1 << i) - 1; j++) {
+            int ch = getchar();
+            // printf("read ch: %c\n", ch);
+            if (ch == EOF) {
+                return 0;
+            }
+            if (ch == '\n') {
+                return 1; // 为什么是1，不应该是 0 吗？读到换行符，停下？
+            } else {
+                code[i][j] = ch;
+            }
+            
+        }
+    }
+    return 1;
+}
+
+int printcodes() {
+    for (int i = 1; i <= 7; i++) {
+        for(int j = 0; j < (1 << i) - 1; j++) {
+            printf("%c", code[i][j]);
+        }
+        printf("\n");
+    }
+    return 0;
 }
 
 int main() {
-    int k, m;
-    
-    while (scanf("%d%d%d", &n, &k, &m) == 3 && n != 0) {
-        for (int i = 0; i < n; i++) {
-            queue[i] = i + 1;
-        }
-        int left = n;
-        int p_A = n - 1, p_B = 0;
-
-        while (left) {
-            p_A = out(p_A, k, 1);  // update pointer A
-            p_B = out(p_B, m, 0); // update pointer A
-            // printf("p_A: %d", p_A);
-            // printf("p_B: %d", p_B);
-            printf("%3d", queue[p_A]);
-            left--;
-            if (queue[p_A] != queue[p_B]) {
-                printf("%3d", queue[p_B]);
-                left--;
+    while (readcodes()) {
+        // printcodes();
+        for (;;) {
+            int len = readint(3); // 读取3位二进制长度
+            if (len == 0) {
+                break;
             }
-            if (left) {
-                printf(",");
+            for (;;) {
+                int value = readint(len);
+                if (value == (1 << len) - 1) {
+                    break; // 全1码结束当前长度
+                }
+                putchar(code[len][value]);
             }
-            queue[p_A] = 0;
-            queue[p_B] = 0;
         }
-        printf("\n");
+        putchar('\n');
+       
     }
     return 0;
 }
