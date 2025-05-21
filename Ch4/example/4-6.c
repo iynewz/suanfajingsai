@@ -1,9 +1,9 @@
 // A Typical Homework, UVa 12412
-// ❌ TBD: Wrong answer. ❌
 #include<stdio.h> 
 #include<string.h>
 
 #define MAX_LEN 22
+#define EPS 1.0E-3
 
 typedef struct {
     char SID[MAX_LEN]; 
@@ -48,7 +48,7 @@ void add() {
         // 检查 SID 是否重复
         int duplicate = 0;
         for (int i = 0; i < student_count; ++i) {
-            if (strcmp(students[i].SID, SID) == 0) {
+            if (strcmp(students[i].SID, SID) == 0 && students[i].is_removed == 0) {
                 duplicate = 1;
                 break;
             }
@@ -61,7 +61,7 @@ void add() {
 
         scanf("%d %s %d %d %d %d", &CID, name, &scores[0], &scores[1], &scores[2], &scores[3]);
         int total = scores[0] + scores[1] + scores[2] + scores[3];
-        float avg = total / 4.0;
+        float avg = total / 4.0 + EPS;
         Student new_student;
         strcpy(new_student.SID, SID);
         new_student.CID = CID;
@@ -172,10 +172,10 @@ void show_stat() {
             }
         }
     }
-    printf("Chinese\nAverage Score: %.2f\nNumber of passed students: %d\nNumber of failed students: %d\n\n", Chinese_total * 1.0 / student_count_in_class, Chinese_passed, student_count_in_class - Chinese_passed);
-    printf("Mathematics\nAverage Score: %.2f\nNumber of passed students: %d\nNumber of failed students: %d\n\n", Mathematics_total * 1.0 / student_count_in_class, Mathematics_passed, student_count_in_class - Mathematics_passed);
-    printf("English\nAverage Score: %.2f\nNumber of passed students: %d\nNumber of failed students: %d\n\n", English_total * 1.0 / student_count_in_class, English_passed, student_count_in_class - English_passed);
-    printf("Programming\nAverage Score: %.2f\nNumber of passed students: %d\nNumber of failed students: %d\n\n", Programming_total * 1.0 / student_count_in_class, Programming_passed, student_count_in_class - Programming_passed);
+    printf("Chinese\nAverage Score: %.2f\nNumber of passed students: %d\nNumber of failed students: %d\n\n", Chinese_total * 1.0 / student_count_in_class + EPS, Chinese_passed, student_count_in_class - Chinese_passed);
+    printf("Mathematics\nAverage Score: %.2f\nNumber of passed students: %d\nNumber of failed students: %d\n\n", Mathematics_total * 1.0 / student_count_in_class+ EPS, Mathematics_passed, student_count_in_class - Mathematics_passed);
+    printf("English\nAverage Score: %.2f\nNumber of passed students: %d\nNumber of failed students: %d\n\n", English_total * 1.0 / student_count_in_class+ EPS, English_passed, student_count_in_class - English_passed);
+    printf("Programming\nAverage Score: %.2f\nNumber of passed students: %d\nNumber of failed students: %d\n\n", Programming_total * 1.0 / student_count_in_class+ EPS, Programming_passed, student_count_in_class - Programming_passed);
 
     printf("Overall:\nNumber of students who passed all subjects: %d\nNumber of students who passed 3 or more subjects: %d\nNumber of students who passed 2 or more subjects: %d\nNumber of students who passed 1 or more subjects: %d\nNumber of students who failed all subjects: %d\n\n", pass_all, pass_3, pass_2, pass_1, student_count_in_class - pass_1);
 
