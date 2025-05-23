@@ -1,8 +1,8 @@
 // Spreadsheet Tracking, UVa512
-// ❌ TBD: Compilation error ❌
+// ❌ TBD: wrong answer ❌
 #include<stdio.h> 
 #include<string.h>
-#define MAX_COMMANDS 100 // 题目里没有 n 的范围
+#define MAX_COMMANDS 10000 // 题目里没有 n 的范围
 
 int cmd_count;
 int query_count;
@@ -12,7 +12,6 @@ typedef struct {
     int cnt;         // 记录参数个数
 } Command;
 Command commands[MAX_COMMANDS];
-int raw_r, raw_c;
 int r, c; // query node
 int gone = 0;
 
@@ -29,7 +28,7 @@ void sort_desc(int arr[], int n) {
     }
 }
 
-// 删除行处理函数
+// delete row
 void DR_command(Command cmd, int *r, int *gone_flag) {
     if (*gone_flag) return;
     sort_desc(cmd.params, cmd.cnt);
@@ -56,20 +55,26 @@ void DC_command(Command cmd, int *c, int *gone_flag) {
     }
 }
 
+// insert row
 void IR_command(Command cmd, int *r) {
+    int count = 0;
     for (int i = 0; i < cmd.cnt; i++) {
         if (cmd.params[i] <= *r) {
-            (*r)++;
+            count++;
         }
     }
+    *r = *r + count;
 }
 
 void IC_command(Command cmd, int *c) {
+    int count = 0;
     for (int i = 0; i < cmd.cnt; i++) {
+        // printf("----cmd.params[i], %d\n", cmd.params[i]);
         if (cmd.params[i] <= *c) {
-            (*c)++;
+            count++;
         }
     }
+    *c = *c + count;
 }
 
 void EX_command(Command cmd, int *r, int *c) {
@@ -85,7 +90,12 @@ void EX_command(Command cmd, int *r, int *c) {
 
 
 int main() {
+    int case_number = 1;
     while(scanf("%d%d", &r, &c) == 2 && r != 0) {
+        if (case_number > 1) {
+            printf("\n");
+        }
+        printf("Spreadsheet #%d\n", case_number);
         scanf("%d", &cmd_count);
        // 保存 commands
         for (int i = 0; i < cmd_count; i++) {
@@ -114,12 +124,15 @@ int main() {
                 // printf("j: %d, %c\n", j, cmd.type[0]);
                 if (strcmp(cmd.type, "DR") == 0) {
                     DR_command(cmd, &r, &gone);
+                    // printf("after DR, %d,%d\n", r, c);
                 } else if (strcmp(cmd.type, "DC") == 0) {
                     DC_command(cmd, &c, &gone);
+                    // printf("after DC, %d,%d\n", r, c);
                 } else if (strcmp(cmd.type, "IR") == 0) {
                     IR_command(cmd, &r);
                 } else if (strcmp(cmd.type, "IC") == 0) {
                     IC_command(cmd, &c);
+                    // printf("after IC, %d,%d\n", r, c);
                 } else if (strcmp(cmd.type, "EX") == 0) {
                     EX_command(cmd, &r, &c);
                 } 
@@ -132,6 +145,8 @@ int main() {
                 printf("moved to (%d,%d)\n", r, c);
             }
         }
+        case_number++;
     }
+    
     return 0;
 }
