@@ -6,6 +6,11 @@
         "*.wxs": "javascript",
         "stack": "cpp",
         "iostream": "cpp",
-        "cstring": "cpp"
+        "cstring": "cpp",
+        "algorithm": "cpp",
+        "chrono": "cpp",
+        "complex": "cpp",
+        "stdlib.h": "c",
+        "cmath": "cpp"
     }
 }
