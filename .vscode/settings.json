@@ -73,6 +73,11 @@
         "__functional_base": "cpp",
         "functional": "cpp",
         "iterator": "cpp",
-        "utility": "cpp"
-    }
+        "utility": "cpp",
+        "set": "cpp",
+        "filesystem": "cpp",
+        "__tree": "cpp",
+        "map": "cpp"
+    },
+    "C_Cpp.errorSquiggles": "disabled"
 }
