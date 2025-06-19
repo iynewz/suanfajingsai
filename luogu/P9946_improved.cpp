@@ -11,34 +11,24 @@ int main()
 {
     int N, K;
     cin >> N >> K;
-    vector<string> words;
+    string word;
+    int current_count = 0; // 当前行字符数
+
     for (int i = 0; i < N; i++)
     {
-        string s;
-        cin >> s;
-        words.push_back(s);
-    }
-    int current_count = 0; // 当前行字符数
-    int p = 0;
-
-    for (int i = 0; i < words.size(); i++)
-    {
-        int word_len = words[i].size();
+        cin >> word;
+        int word_len = word.size();
         int new_len = current_count + word_len;
-        if (current_count == 0)
+        if (new_len <= K)
         {
-            cout << words[i];
-            current_count += word_len;
-        }
-        else if (new_len <= K)
-        {
-            cout << ' ' << words[i];
+            current_count == 0 ? cout << word
+                               : cout << ' ' << word;
             current_count = new_len;
         }
         else
         {
             cout << endl
-                 << words[i];
+                 << word;
             current_count = word_len;
         }
     }
