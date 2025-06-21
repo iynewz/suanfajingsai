@@ -1,27 +1,7 @@
-26
-a
-b
-c
-d
-e
-f
-g
-h
-i
-j
-k
-l
-m
-n
-o
-p
-q
-r
-s
-t
-u
-v
-w
-x
-y
-z
+3 3
+How to compete in ACM ICPC,Peter,peter@neerc.ifmo.ru
+How to win ACM ICPC,Michael,michael@neerc.ifmo.ru
+Notes from ACM ICPC champion,Michael,michael@neerc.ifmo.ru
+2 3
+1,Peter,peter@neerc.ifmo.ru
+2,Michael,michael@neerc.ifmo.ru
