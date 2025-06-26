@@ -80,7 +80,8 @@
         "map": "cpp",
         "__memory": "c",
         "stdio.h": "c",
-        "strstream": "cpp"
+        "strstream": "cpp",
+        "climits": "cpp"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }
