@@ -4,6 +4,8 @@
 #include <climits>
 #include <string>
 #include <iomanip>
+#include <cmath>
+#include <algorithm>
 
 using namespace std;
 
@@ -19,9 +21,8 @@ struct Player
     int ho36;
     int ho72;
     string total;
-    string place;        // 名次（如 "2T", "3" 等）
-    double money;        //
-    string money_string; // $  7245.28
+    string place; // 名次（如 "2T", "3" 等）
+    double money; //
     int rounds_completed() const
     {
         if (DQ_position >= 0)
@@ -48,12 +49,17 @@ bool comparePlayers_36(const Player &a, const Player &b)
 
 bool comparePlayers_72(const Player &a, const Player &b)
 {
-    if (a.ho72 != b.ho72)
-        return a.ho72 < b.ho72;
     int rounds_a = a.rounds_completed();
     int rounds_b = b.rounds_completed();
-    if (rounds_a != rounds_b)
-        return rounds_a > rounds_b;
+    if (a.ho72 != b.ho72 && rounds_a == 4 && rounds_b == 4)
+        return a.ho72 < b.ho72;
+    if (rounds_a != 4 || rounds_b != 4)
+    {
+        if (rounds_a != rounds_b)
+            return rounds_a > rounds_b;
+        if (a.ho72 != b.ho72)
+            return a.ho72 < b.ho72;
+    }
     return a.name < b.name;
 }
 
@@ -64,54 +70,137 @@ bool isComplete(const Player &p)
 
 void assignMoney(vector<Player> &players)
 {
-    for (size_t i = 0; i < players.size(); ++i)
+    int purse_index = 0; // 当前分配的奖金比例索引
+    int i = 0;           // 当前处理的选手索引
+
+    while (i < players.size() && purse_index < purse_count)
     {
-        players[i].money = 100; // hardcode
+        // 跳过未完成比赛的选手
+        if (players[i].rounds_completed() < 4)
+        {
+            players[i].money = 0;
+            i++;
+            continue;
+        }
+
+        // 分组：找出所有并列的选手
+        int j = i;
+        int pro_count = 0;             // 组内非业余选手数量
+        double group_percentage = 0.0; // 组内可分配的奖金比例总和
+
+        // 找出所有总分相同的选手
+        while (j < players.size() && players[j].ho72 == players[i].ho72 &&
+               players[j].rounds_completed() == 4)
+        {
+            // 统计非业余选手数量
+            if (!players[j].amateur)
+            {
+                pro_count++;
+                // 如果有奖金比例可用，则累加
+                if (purse_index < purse_count)
+                {
+                    group_percentage += purse[purse_index];
+                    purse_index++;
+                }
+            }
+            j++;
+        }
+
+        // 计算每个非业余选手的奖金
+        double money_per_pro = 0.0;
+        bool has_money = (group_percentage > 0); // 该组是否有奖金分配
+
+        if (pro_count > 0 && has_money)
+        {
+            money_per_pro = (group_percentage * purse_total) / 100.0 / pro_count;
+            // 四舍五入到两位小数
+            money_per_pro = round(money_per_pro * 100.0) / 100.0;
+        }
+
+        // 分配奖金给组内非业余选手
+        for (int k = i; k < j; k++)
+        {
+            if (!players[k].amateur && has_money)
+            {
+                players[k].money = money_per_pro;
+            }
+            else
+            {
+                players[k].money = 0.0;
+            }
+        }
+
+        i = j; // 移动到下一组
+    }
+
+    // 处理奖金已分配完毕的情况
+    while (i < players.size())
+    {
+        // 所有剩余选手（包括非业余选手）都无法获得奖金
+        players[i].money = 0.0;
+        i++;
     }
 }
+
 void assignPlaces(vector<Player> &players)
 {
     int current_rank = 1;
-    for (size_t i = 0; i < players.size(); ++i)
+    size_t i = 0;
+
+    while (i < players.size())
     {
         if (players[i].rounds_completed() < 4)
         {
             players[i].place = "";
             players[i].total = "DQ";
+            i++;
             continue;
         }
-        else
+
+        // 找出当前分数段的所有选手
+        double current_score = players[i].ho72;
+        size_t j = i;
+        vector<size_t> group;      // 存储同分组选手索引
+        int proWithMoneyCount = 0; // 统计非业余奖金选手数量
+
+        // 收集同分选手并统计符合条件的职业选手
+        while (j < players.size() && players[j].ho72 == current_score)
         {
-            players[i].total = players[i].ho72;
+            if (players[j].rounds_completed() < 4)
+                break;
+
+            group.push_back(j);
+
+            // 统计非业余且获得奖金的选手
+            if (!players[j].amateur && players[j].money > 0)
+            {
+                proWithMoneyCount++;
+            }
+            j++;
         }
 
-        // 检查是否需要处理并列
-        bool is_tie = (i > 0 && players[i].ho72 == players[i - 1].ho72);
+        // 确定组内是否需要添加T标记
+        bool addTieSuffix = (proWithMoneyCount >= 2);
+        int group_size = group.size();
 
-        if (is_tie)
+        // 处理组内每个选手
+        for (size_t k = 0; k < group.size(); ++k)
         {
-            // 只有当前选手和前一个选手都是非业余且都获得奖金时，才加 'T'
-            if (!players[i].amateur && players[i].money > 0 &&
-                !players[i - 1].amateur && players[i - 1].money > 0)
+            size_t idx = group[k];
+            if (addTieSuffix && !players[idx].amateur && players[idx].money > 0)
             {
-                // 如果前一个选手的名次没有 'T'，则添加
-                if (players[i - 1].place.find('T') == string::npos)
-                {
-                    players[i - 1].place += "T";
-                }
-                players[i].place = players[i - 1].place;
+                players[idx].place = to_string(current_rank) + 'T';
             }
             else
             {
-                players[i].place = players[i - 1].place;
+                players[idx].place = to_string(current_rank);
             }
-            current_rank++;
+            players[idx].total = players[idx].ho72; // 确保设置总杆数
         }
-        else
-        {
-            players[i].place = to_string(current_rank);
-            current_rank++;
-        }
+
+        // 更新名次（跳过当前组占用的所有名次）
+        current_rank += group_size;
+        i = j; // 移动到下一组
     }
 }
 
@@ -190,11 +279,10 @@ int main()
 
             curr_p.ho36 = round_0_1;
             curr_p.ho72 = round_0_1 + round_2_3;
-            if (0 <= curr_p.DQ_position && curr_p.DQ_position <= 1)
+            if (curr_p.DQ_position == -1 || curr_p.DQ_position > 1)
             {
-                curr_p.ho36 = INT_MAX; // 如果在前 2 轮违规，一定不能晋级
+                players.push_back(curr_p); // 如果在前 2 轮违规，一定不能晋级
             }
-            players.push_back(curr_p);
         }
 
         sort(players.begin(), players.end(), comparePlayers_36);
@@ -212,29 +300,30 @@ int main()
             players.erase(players.begin() + qualified_count, players.end());
         }
 
-        // 晋级后，先按是否完成分组（未完成的排在后面）
+        sort(players.begin(), players.end(), comparePlayers_72);
+        // 未完成的排在后面
         vector<Player>::iterator complete_end =
             partition(players.begin(), players.end(), isComplete);
 
-        // 对已完成的部分排序
-        sort(players.begin(), complete_end, comparePlayers_72);
+        assignMoney(players);
 
-        // 处理每个 player 的奖金
-        assignMoney(players); // todo
-
-        // 处理 Place 次序
         assignPlaces(players);
 
-        // print
-        cout
-            << HEADER << endl;
-        // print players for test
+        i != 0 && cout << endl;
+        cout << HEADER << endl;
         for (vector<Player>::iterator it = players.begin(); it != players.end(); ++it)
         {
 
-            cout << left << setw(21) << it->name << setw(10) << it->place << setw(5) << it->score[0] << setw(5) << it->score[1] << setw(5) << it->score[2] << setw(5) << it->score[3] << setw(10) << it->ho72 << setw(3) << "$" << endl;
+            cout << left << setw(21) << it->name << setw(10) << it->place;
+            for (int score_index = 0; score_index < 4; score_index++)
+            {
+                it->score[score_index] == -1 ? cout << setw(5) << " " : cout << setw(5) << it->score[score_index];
+            }
+            (it->total == "DQ") ? cout << it->total : (it->money == 0) ? cout << it->ho72
+                                                                       : cout << setw(10) << it->ho72;
+            // cout << it->money << endl;
+            (it->money == 0 || it->money == 0.00) ? cout << endl : cout << "$" << right << setw(9) << fixed << setprecision(2) << it->money << endl;
         }
-        cout << endl;
     }
     return 0;
 }
