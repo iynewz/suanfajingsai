@@ -78,7 +78,7 @@ void assignMoney(vector<Player> &players)
         // 跳过未完成比赛的选手
         if (players[i].rounds_completed() < 4)
         {
-            players[i].money = 0;
+            players[i].money = -1;
             i++;
             continue;
         }
@@ -108,28 +108,20 @@ void assignMoney(vector<Player> &players)
 
         // 计算每个非业余选手的奖金
         double money_per_pro = 0.0;
-        bool has_money = (group_percentage > 0); // 该组是否有奖金分配
+        // bool has_money = (group_percentage > 0); // 该组是否有奖金分配
 
-        if (pro_count > 0 && has_money)
+        if (pro_count > 0)
         {
             money_per_pro = (group_percentage * purse_total) / 100.0 / pro_count;
             // 四舍五入到两位小数
-            money_per_pro = round(money_per_pro * 100.0) / 100.0;
+            money_per_pro = round(money_per_pro * 100.0) / 100.0; // todo： no round
         }
 
         // 分配奖金给组内非业余选手
         for (int k = i; k < j; k++)
         {
-            if (!players[k].amateur && has_money)
-            {
-                players[k].money = money_per_pro;
-            }
-            else
-            {
-                players[k].money = 0.0;
-            }
+            players[k].money = players[k].amateur ? -1 : money_per_pro;
         }
-
         i = j; // 移动到下一组
     }
 
@@ -137,7 +129,7 @@ void assignMoney(vector<Player> &players)
     while (i < players.size())
     {
         // 所有剩余选手（包括非业余选手）都无法获得奖金
-        players[i].money = 0.0;
+        players[i].money = -1;
         i++;
     }
 }
@@ -172,7 +164,7 @@ void assignPlaces(vector<Player> &players)
             group.push_back(j);
 
             // 统计非业余且获得奖金的选手
-            if (!players[j].amateur && players[j].money > 0)
+            if (!players[j].amateur && players[j].money != -1)
             {
                 proWithMoneyCount++;
             }
@@ -187,7 +179,7 @@ void assignPlaces(vector<Player> &players)
         for (size_t k = 0; k < group.size(); ++k)
         {
             size_t idx = group[k];
-            if (addTieSuffix && !players[idx].amateur && players[idx].money > 0)
+            if (addTieSuffix && !players[idx].amateur && players[idx].money != -1)
             {
                 players[idx].place = to_string(current_rank) + 'T';
             }
@@ -319,10 +311,10 @@ int main()
             {
                 it->score[score_index] == -1 ? cout << setw(5) << " " : cout << setw(5) << it->score[score_index];
             }
-            (it->total == "DQ") ? cout << it->total : (it->money == 0) ? cout << it->ho72
-                                                                       : cout << setw(10) << it->ho72;
+            (it->total == "DQ") ? cout << it->total : (it->money == -1) ? cout << it->ho72
+                                                                        : cout << setw(10) << it->ho72;
             // cout << it->money << endl;
-            (it->money == 0 || it->money == 0.00) ? cout << endl : cout << "$" << right << setw(9) << fixed << setprecision(2) << it->money << endl;
+            (it->money == -1) ? cout << endl : cout << "$" << right << setw(9) << fixed << setprecision(2) << it->money << endl;
         }
     }
     return 0;
