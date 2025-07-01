@@ -1,0 +1,16 @@
+<sentence> <subject> <verb> <object> .
+<sentence> <subject> <verb> .
+<subject> The <noun>
+<subject> A <adjective> <noun>
+<noun> dog
+<noun> cat
+<noun> bird
+<adjective> happy
+<adjective> big
+<adjective> small
+<verb> eats
+<verb> chases
+<verb> sees
+<object> a bone
+<object> the ball
+<object> a mouse
