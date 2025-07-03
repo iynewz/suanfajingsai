@@ -81,7 +81,8 @@
         "__memory": "c",
         "stdio.h": "c",
         "strstream": "cpp",
-        "climits": "cpp"
+        "climits": "cpp",
+        "list": "cpp"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }
