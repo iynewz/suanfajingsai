@@ -47,19 +47,19 @@ struct ArrayInfo
 //     void get_value()
 // }
 
-void test_array()
-{
-    ArrayInfo arr(30);
-    assert(arr.assign(0, 10));
-    assert(!arr.assign(30, 10));
+// void test_array()
+// {
+//     ArrayInfo arr(30);
+//     assert(arr.assign(0, 10));
+//     assert(!arr.assign(30, 10));
 
-    int val = -1;
-    assert(arr.get_at(0, val));
-    assert(val == 10);
+//     int val = -1;
+//     assert(arr.get_at(0, val));
+//     assert(val == 10);
 
-    assert(!arr.get_at(1, val));
-    assert(!arr.get_at(31, val));
-}
+//     assert(!arr.get_at(1, val));
+//     assert(!arr.get_at(31, val));
+// }
 
 pair<string, string> split_name_index(const string &s)
 {
@@ -70,16 +70,16 @@ pair<string, string> split_name_index(const string &s)
     return {array_name, index};
 }
 
-void test_split_name_index()
-{
-    pair<string, string> res = split_name_index("a[1]");
-    assert(res.first == "a");
-    assert(res.second == "1");
+// void test_split_name_index()
+// {
+//     pair<string, string> res = split_name_index("a[1]");
+//     assert(res.first == "a");
+//     assert(res.second == "1");
 
-    res = split_name_index("a[b[c[d[1]]]]");
-    assert(res.first == "a");
-    assert(res.second == "b[c[d[1]]]");
-}
+//     res = split_name_index("a[b[c[d[1]]]]");
+//     assert(res.first == "a");
+//     assert(res.second == "b[c[d[1]]]");
+// }
 
 // a[10];
 // a[1] = 0;
@@ -204,6 +204,10 @@ int main()
                     found_bug = true;
                 }
             }
+        }
+
+        if (case_over) {
+            break;
         }
 
         found_bug ? cout << line << endl : cout << 0 << endl;
