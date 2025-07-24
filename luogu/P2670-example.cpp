@@ -6,7 +6,7 @@ using namespace std;
 int d[3] = {-1, 1, 0};
 
 bool f[105][105]; // f[i][j]表示(i,j)上是否含有地雷。bool定义为全局变量时默认初始化为false
-int ans[105][105];
+
 int sta(int x, int y)
 {
     /*给定坐标(x,y), 统计其周边有多少个雷*/
