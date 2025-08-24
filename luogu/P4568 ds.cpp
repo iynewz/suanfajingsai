@@ -128,7 +128,7 @@ void dijkstra()
         }
         vis[u] = true;
 
-        // 遍历所有邻居
+        // 遍历 u 的所有邻居
         for (int i = head[u]; i; i = edges[i].next)
         {
             int v = edges[i].to;
