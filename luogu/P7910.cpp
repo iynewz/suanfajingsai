@@ -44,10 +44,10 @@ int main()
     {
         int op, x, v;
         cin >> op;
-        if (op == 1)
+        if (op == 1) // 修改
         {
             cin >> x >> v;
-            a[t[x]].nvalue = v; //
+            a[t[x]].nvalue = v;
             for (int j = 2; j <= n; j++)
             {
                 if (cmp(a[j], a[j - 1]))
