@@ -1,11 +1,11 @@
 #include <iostream>
 #include <climits>
-// runtime error
 using namespace std;
 
-const int maxn = 50;
-const int maxk = 50;
-const int maxm = 1000;
+const int maxn = 50 + 5; // runtime error
+
+const int maxk = 50 + 5;
+const int maxm = 1000 + 5;
 int n, m, k;
 
 int head[maxn * maxk];
