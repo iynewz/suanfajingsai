@@ -1,4 +1,3 @@
-// UVA 514，但 udebug 没过
 #include <iostream>
 #include <cstring>
 #include <stack>
