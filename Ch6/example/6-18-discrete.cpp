@@ -1,4 +1,4 @@
-// segmentation fault
+// AC
 // UVa12171
 #include <cstdio>
 #include <cctype>
@@ -9,7 +9,7 @@
 #include <array>
 #include <algorithm>
 using namespace std;
-const int maxk = 200 + 10;
+const int maxk = 100 + 5;
 int T, n;
 
 bool occupied[maxk][maxk][maxk];
@@ -21,7 +21,7 @@ int dirx[6] = {1, -1, 0, 0, 0, 0};
 int diry[6] = {0, 0, 1, -1, 0, 0};
 int dirz[6] = {0, 0, 0, 0, 1, -1};
 
-int size_x, size_y, size_z; // 离散后有几个本质不同的点
+int size_x, size_y, size_z; // （加入前后 2 个点之后）离散后有几个本质不同的点
 
 bool inRange(int x, int y, int z)
 {
@@ -125,6 +125,11 @@ int main()
     while (T--)
     {
         scanf("%d", &n);
+        if (n == 0)
+        {
+            puts("0 0");
+            continue;
+        }
         memset(occupied, false, sizeof(occupied));
         memset(visited_air, false, sizeof(visited_air));
         xs.clear();
@@ -159,9 +164,9 @@ int main()
         ys.push_back(ys.back() + 1);
         zs.push_back(zs.back() + 1);
 
-        size_x = xs.size() - 1;
-        size_y = ys.size() - 1;
-        size_z = zs.size() - 1;
+        size_x = xs.size();
+        size_y = ys.size();
+        size_z = zs.size();
 
         for (auto &b : boxes)
         {
@@ -180,12 +185,12 @@ int main()
                     for (int k = iz0; k < iz1; ++k)
                         occupied[i][j][k] = true;
         }
-    }
 
-    int volume = 0;
-    int area = 0;
-    bfs(area, volume);
-    printf("%d %d\n", area, volume);
+        int volume = 0;
+        int area = 0;
+        bfs(area, volume);
+        printf("%d %d\n", area, volume);
+    }
 
     return 0;
 }
