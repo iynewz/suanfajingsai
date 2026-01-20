@@ -1,4 +1,4 @@
-// https : // prprprpony.github.io/blog/2016/07/04/uva-12113/
+// learn from https : // prprprpony.github.io/blog/2016/07/04/uva-12113/
 #include <cstdio>
 #include <iostream>
 #include <set>
