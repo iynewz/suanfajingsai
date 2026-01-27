@@ -1,4 +1,4 @@
-// WA
+// UVA 12107 - Digit Puzzle
 #include <cstdio>
 #include <cstring>
 #include <iostream>
