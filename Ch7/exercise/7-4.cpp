@@ -1,3 +1,8 @@
+/**
+习题 7-4 切断圆环链(Cutting Chains, ACM/ICPC World Finals 2000, UVa818)
+learn from https://www.cnblogs.com/zyb993963526/p/6350198.html
+
+*/
 #include <cstdio>
 #include <cstring>
 #include <map>
@@ -29,7 +34,7 @@ bool tooManyLink(int bits) {
   return false;
 }
 
-bool dfs(int curr, int parent, int bits) { //
+bool dfs(int curr, int parent, int bits) { // 判断是否有回路存在
   used[curr] = 1;
   for (int i = 0; i < n; i++) {
     if (mapp[curr][i]) {

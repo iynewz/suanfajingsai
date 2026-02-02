@@ -1,9 +1,9 @@
 // print trace not correct
+#include <algorithm>
 #include <cstdio>
 #include <cstring>
 #include <queue>
 #include <vector>
-
 using namespace std;
 
 int T;
@@ -23,6 +23,7 @@ int bfs(State start) {
   queue<pair<State, int>> q;
   q.push({start, 0});
   visited[start.robot][start.stone] = true;
+  parent[start.robot][start.stone] = {-1, -1};
 
   while (!q.empty()) {
     State cur = q.front().first;
@@ -47,13 +48,13 @@ int bfs(State start) {
           next.stone = mask;
           visited[v][mask] = true;
           q.push({next, dist + 1});
-          parent[v][mask] = cur;
+          parent[v][mask] = cur; // 当前状态是从哪个状态来的
         }
       }
     }
     // move stone
     for (int i = 0; i < n; i++) {
-      if (mask & (1 << i)) {
+      if (mask & (1 << i)) { // 遍历每一个 stone 位置
         for (int v : adj[i]) {
           if (!((1 << v) & mask) && v != r) { // v: no stone, no robot
             // move
@@ -78,16 +79,22 @@ void printTrace(State end) {
   vector<State> path;
 
   State cur = end;
-  while (cur.robot != -1) {
+  while (!(cur.robot == -1 && cur.stone == -1)) {
     path.push_back(cur);
+
+    State prev = parent[cur.robot][cur.stone];
+    if (prev.robot == -1 && prev.stone == -1) {
+      break;
+    }
+
     cur = parent[cur.robot][cur.stone];
   }
 
   reverse(path.begin(), path.end());
 
-  for (auto &s : path) {
-    printf("robot=%d stoneMask=%d\n", s.robot, s.stone);
-  }
+  // for (auto &s : path) {
+  //   printf("robot=%d stoneMask=%d\n", s.robot, s.stone);
+  // }
   for (int i = 1; i < path.size(); i++) {
     State pre = path[i - 1];
     State now = path[i];
@@ -101,13 +108,16 @@ void printTrace(State end) {
     // robot 没动，obstacle 在动
     int from = -1, to = -1;
 
-    for (int b = 0; b < m; b++) {
+    for (int b = 0; b <= n; b++) {
       bool had = pre.stone & (1 << b);
       bool has = now.stone & (1 << b);
-
-      if (had != has) {
-        from = b + 1;
-        to = b + 1;
+      // printf("--b:%d, had:%d, has:%d , pre.stone:%d, now.stone:%d\n", b, had,
+      //        has, pre.stone, now.stone);
+      if (had && !has) {
+        from = b + 1; // 石头离开
+      }
+      if (!had && has) {
+        to = b + 1; // 石头到达
       }
     }
 
@@ -125,8 +135,12 @@ int main() {
     t--;
 
     adj.assign(maxn, vector<int>());
-    memset(parent, -1, sizeof(parent));
     memset(visited, false, sizeof(visited));
+    for (int i = 0; i < maxn; i++) {
+      for (int j = 0; j < (1 << maxn); j++) {
+        parent[i][j] = {-1, -1};
+      }
+    }
 
     int haveStone = 0;
     for (int i = 0; i < m; i++) {
