@@ -1,8 +1,8 @@
-// TLE, Then i learned from https://www.cnblogs.com/UniqueColor/p/4872790.htm. Now AC
+// TLE, Then i learned from https://www.cnblogs.com/UniqueColor/p/4872790.htm.
+// Now AC
 #include <algorithm>
 #include <cstdio>
 #include <cstring>
-#include <functional> // Required for std::greater
 #include <iostream>
 #include <queue>
 #include <string>

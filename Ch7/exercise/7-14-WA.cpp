@@ -2,7 +2,6 @@
 #include <algorithm>
 #include <cstdio>
 #include <functional> // Required for std::greater
-#include <iostream>
 #include <vector>
 
 using namespace std;
