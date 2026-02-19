@@ -1,7 +1,9 @@
 // Stacks of Flapjacks, UVa120
+// WA
 // https://xuanwo.io/2014/11/04/UVa-120-Stacks-of-Flapjacks/
 #include <algorithm>
 #include <iostream>
+#include <queue>
 #include <sstream>
 #include <string>
 using namespace std;
